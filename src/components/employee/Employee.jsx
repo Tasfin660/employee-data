@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import rolesData from '../../data/rolesData';
-// REACT ICONS
 import { FaEye } from 'react-icons/fa';
 import { FaRegStar } from 'react-icons/fa';
 import { FaStar } from 'react-icons/fa';

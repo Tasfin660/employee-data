@@ -57,10 +57,10 @@ export default function FilterEmployee({
     </div>
   );
 }
-// FilterEmployee.propTypes = {
-//   total: PropTypes.number,
-//   category: PropTypes.string,
-//   onCategory: PropTypes.func,
-//   maxResults: PropTypes.string | PropTypes.number,
-//   onMaxResults: PropTypes.func,
-// };
+FilterEmployee.propTypes = {
+  total: PropTypes.number,
+  category: PropTypes.string,
+  onCategory: PropTypes.func,
+  maxResults: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  onMaxResults: PropTypes.func,
+};

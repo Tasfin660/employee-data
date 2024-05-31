@@ -2,17 +2,16 @@ import { useEffect, useState } from 'react';
 import { useData } from '../contexts/DataContext';
 import Filterbar from '../components/layout/Filterbar';
 import List from '../components/layout/List';
-import Notification from '../components/common/Notification';
-import DeleteEmployee from '../components/employee/DeleteEmployee';
+// import Notification from '../components/common/Notification';
 
 export default function AllEmployee() {
   const { employeesData } = useData();
   const [filteredData, setFilteredData] = useState(employeesData);
-  const [maxResults, setMaxResults] = useState(9999);
   const [category, setCategory] = useState('all');
-  const [showNotification, setShowNotification] = useState(false);
-  const [isSuccess, setIsSuccess] = useState();
-  const [message, setMessage] = useState();
+  const [maxResults, setMaxResults] = useState(9999);
+  // const [showNotification, setShowNotification] = useState(false);
+  // const [isSuccess, setIsSuccess] = useState();
+  // const [message, setMessage] = useState();
 
   useEffect(() => {
     document.title = 'Employee Data | All';
@@ -26,10 +25,10 @@ export default function AllEmployee() {
     setMaxResults(value);
   }
 
-  function handleNotification(isSuccess, message) {
-    setIsSuccess(isSuccess);
-    setMessage(message);
-  }
+  // function handleNotification(isSuccess, message) {
+  //   setIsSuccess(isSuccess);
+  //   setMessage(message);
+  // }
 
   useEffect(() => {
     (function filterEmployeeData() {
@@ -51,9 +50,9 @@ export default function AllEmployee() {
         onMaxResults={handleMaxResults}
       />
       <List element={filteredData} filterRating={-1}></List>
-      {showNotification && (
+      {/* {showNotification && (
         <Notification isSuccess={isSuccess} message={message} />
-      )}
+      )} */}
     </div>
   );
 }

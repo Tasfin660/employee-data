@@ -4,7 +4,7 @@ import { useData } from '../../contexts/DataContext';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-export default function DeleteEmployee({ selected: { name } }) {
+export default function DeleteEmployee({ selected }) {
   const { employeesData, setEmployeesData } = useData();
   const navigate = useNavigate();
 
@@ -21,12 +21,14 @@ export default function DeleteEmployee({ selected: { name } }) {
           .select();
         setEmployeesData(employeesData.filter(curr => curr.id !== selected.id));
         navigate('/all');
-        console.log(`${name} is deleted from the database successfully`);
+        console.log(
+          `${selected.name} is deleted from the database successfully`,
+        );
         // handleNotification(true, `Deleted ${selected.name} successfully`);
       } catch (e) {
         // handleNotification(false, `Couldn't delete ${selected.name} `);
         console.log(
-          `There was en error in deleteting ${name} from the database.`,
+          `There was en error in deleteting ${selected.name} from the database.`,
         );
       }
       /*
@@ -50,5 +52,8 @@ rounded-full bg-red-500 text-lg text-white duration-300 hover:bg-red-600 disable
 }
 
 DeleteEmployee.propTypes = {
-  select: PropTypes.object,
+  selected: PropTypes.shape({
+    name: PropTypes.string,
+    id: PropTypes.number,
+  }),
 };

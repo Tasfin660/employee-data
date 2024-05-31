@@ -8,6 +8,7 @@ import { AiFillAppstore } from 'react-icons/ai';
 import { FaGamepad } from 'react-icons/fa';
 import { CgWebsite } from 'react-icons/cg';
 import { IoSchoolSharp } from 'react-icons/io5';
+import TertiaryHeading from '../typography/TertiaryHeading';
 
 export default function StatsBox({ rolesNames, rolesCounts }) {
   const icons = [
@@ -21,12 +22,10 @@ export default function StatsBox({ rolesNames, rolesCounts }) {
 
   return (
     <div>
-      <h2 className="mb-6 text-2xl font-semibold text-gray-600">
-        All Roles Stats
-      </h2>
+      <TertiaryHeading h3="All Roles Stats" />
       <ul
-        className="grid grid-cols-[max-content,max-content,1fr] gap-x-6 gap-y-2 rounded-b-xl border-t-2 border-emerald-400 bg-[#fdfdfd] p-10 text-lg
-         shadow-lg"
+        className="mt-6 grid grid-cols-[max-content,max-content,1fr] gap-x-6 gap-y-2 rounded-b-xl border-t-2 border-emerald-400 bg-[#fdfdfd] p-10
+         text-lg shadow-lg"
       >
         {Array.from({ length: rolesNames.length }, (_, i) => (
           <React.Fragment key={i}>

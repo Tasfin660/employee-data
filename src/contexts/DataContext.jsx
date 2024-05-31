@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext, createContext } from 'react';
-import supabase from './../services/supabase';
 import PropTypes from 'prop-types';
-import NotFound from '../components/common/NotFound';
+import supabase from './../services/supabase';
 import MainLayout from '../components/layout/MainLayout';
+import NotFound from '../components/common/NotFound';
 
 const DataContext = createContext();
 const LoadingContext = createContext();

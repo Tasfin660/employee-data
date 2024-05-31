@@ -36,7 +36,7 @@ export default function Footer() {
           </a>
         </li>
         <li className="outer-glow">
-          <a target="_blank" href="#">
+          <a target="_blank" href="https://twitter.com/Tasfin660">
             <FaXTwitter />
           </a>
         </li>
