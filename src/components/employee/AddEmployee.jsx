@@ -15,6 +15,11 @@ export default function AddEmployee() {
 
   const rolesArr = Object.keys(rolesData);
 
+  function handleNotification(isSuccess, message) {
+    setIsSuccess(isSuccess);
+    setMessage(message);
+  }
+
   async function submit(event) {
     event.preventDefault();
     const passcode = prompt(
@@ -33,13 +38,10 @@ export default function AddEmployee() {
           ])
           .select();
         setEmployeesData([...employeesData, data[0]]);
-
-        setIsSuccess(true);
-        setMessage(`Successfully added ${name}`);
+        handleNotification(true, `Successfully added ${name}`);
         console.log(`Successfully added ${name} to the database` + data[0]);
       } catch (e) {
-        setIsSuccess(false);
-        setMessage(`Couldn't add ${name}`);
+        handleNotification(false, `Couldn't add ${name}`);
         console.log(
           `There was en error in adding ${name} to the database. Message: ` + e,
         );
