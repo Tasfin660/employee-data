@@ -2,12 +2,17 @@ import { useState } from 'react';
 import { useData } from '../../contexts/DataContext';
 import rolesData from '../../data/rolesData';
 import supabase from '../../services/supabase';
+import Notification from '../common/Notification';
 
 export default function AddEmployee() {
   const { employeesData, setEmployeesData } = useData();
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [role, setRole] = useState('disabled');
+  const [showNotification, setShowNotification] = useState(false);
+  const [isSuccess, setIsSuccess] = useState();
+  const [message, setMessage] = useState();
+
   const rolesArr = Object.keys(rolesData);
 
   async function submit(event) {
@@ -16,27 +21,38 @@ export default function AddEmployee() {
       'Please provide password for authentication purposes',
     );
     if (passcode === import.meta.env.VITE_AUTHENTICATON_PASSCODE) {
-      let { data, error } = await supabase
-        .from('employee')
-        .insert([
-          {
-            name,
-            image,
-            role,
-          },
-        ])
-        .select();
-      setEmployeesData([...employeesData, data[0]]);
-      error
-        ? console.log(
-            `There was en error in adding ${name} to the database. Message: ` +
-              error,
-          )
-        : console.log(`Successfully added ${name} to the database` + data[0]);
+      try {
+        let { data } = await supabase
+          .from('employee')
+          .insert([
+            {
+              name,
+              image,
+              role,
+            },
+          ])
+          .select();
+        setEmployeesData([...employeesData, data[0]]);
+
+        setIsSuccess(true);
+        setMessage(`Successfully added ${name}`);
+        console.log(`Successfully added ${name} to the database` + data[0]);
+      } catch (e) {
+        setIsSuccess(false);
+        setMessage(`Couldn't add ${name}`);
+        console.log(
+          `There was en error in adding ${name} to the database. Message: ` + e,
+        );
+      } finally {
+        setShowNotification(true);
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 3000);
+        setName('');
+        setImage('');
+        setRole('disabled');
+      }
     } else alert('Sorry, authentication password is wrong');
-    setName('');
-    setImage('');
-    setRole('disabled');
   }
 
   const isFormValid = () => {
@@ -99,6 +115,9 @@ export default function AddEmployee() {
           Add Employee
         </button>
       </form>
+      {showNotification && (
+        <Notification isSuccess={isSuccess} message={message} />
+      )}
     </div>
   );
 }

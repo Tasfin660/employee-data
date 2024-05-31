@@ -3,11 +3,17 @@ import { useData } from '../../contexts/DataContext';
 import supabase from '../../services/supabase';
 import rolesData from '../../data/rolesData';
 
-export default function UpdateEmployee({ selected, onModal }) {
+export default function UpdateEmployee({
+  selected,
+  onModal,
+  setShowNotification,
+  handleNotification,
+}) {
   const { employeesData } = useData();
   const [name, setName] = useState(selected.name);
   const [role, setRole] = useState(selected.role);
   const [rating, setRating] = useState(selected.rating);
+
   const rolesNames = Object.keys(rolesData);
 
   async function handleUpdate() {
@@ -15,36 +21,45 @@ export default function UpdateEmployee({ selected, onModal }) {
       'Please provide the password for authentication purposes',
     );
     if (userPassword === import.meta.env.VITE_AUTHENTICATON_PASSCODE) {
-      let { data, error } = await supabase
-        .from('employee')
-        .update([
-          {
-            name,
-            role,
-            rating,
-          },
-        ])
-        .eq('id', selected.id)
-        .select();
-      employeesData.forEach((employee, index) => {
-        if (employee.id === selected.id) {
-          employeesData[index] = {
-            ...employeesData[index],
-            ...data[0],
-          };
-        }
-      });
+      try {
+        let { data } = await supabase
+          .from('employee')
+          .update([
+            {
+              name,
+              role,
+              rating,
+            },
+          ])
+          .eq('id', selected.id)
+          .select();
+        employeesData.forEach((employee, index) => {
+          if (employee.id === selected.id) {
+            employeesData[index] = {
+              ...employeesData[index],
+              ...data[0],
+            };
+          }
+        });
+        handleNotification(true, `Successfully updated ${selected.name}`);
+        console.log(
+          `${selected.name} is updated into the database successfully`,
+        );
+      } catch (e) {
+        handleNotification(false, `Couldn't update ${selected.name}`);
 
-      error
-        ? console.log(
-            `There was en error in updating ${selected.name} into the database. Message: ` +
-              error,
-          )
-        : console.log(
-            `${selected.name} is updated into the database successfully`,
-          );
+        console.log(
+          `There was en error in updating ${selected.name} into the database. Message: ` +
+            e,
+        );
+      } finally {
+        onModal();
+        setShowNotification(true);
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 3000);
+      }
     } else alert('Sorry, authentication password is wrong');
-    onModal();
   }
 
   return (
@@ -130,4 +145,6 @@ UpdateEmployee.propTypes = {
     rating: PropTypes.number,
   }),
   onModal: PropTypes.func,
+  setShowNotification: PropTypes.func,
+  handleNotification: PropTypes.func,
 };

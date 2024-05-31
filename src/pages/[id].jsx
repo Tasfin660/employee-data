@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { useData } from '../contexts/DataContext';
-import supabase from '../services/supabase';
+import { useData, useLoading } from '../contexts/DataContext';
 // UTILITIES
 import NotFound from '../components/common/NotFound';
+import Loading from '../components/common/Loading';
 import Notification from '../components/common/Notification';
 // PAGE COMPONENTS
 import Navigation from '../components/aboutEmployee/Navigation';
@@ -12,16 +12,22 @@ import BasicInfo from '../components/aboutEmployee/BasicInfo';
 import SkillsInfo from '../components/aboutEmployee/SkillsInfo';
 import Bio from '../components/aboutEmployee/Bio';
 import UpdateEmployee from '../components/employee/UpdateEmployee';
-import AllEmployee from './all';
 // REACT ICONS
 import { FaEdit } from 'react-icons/fa';
-import { MdDelete } from 'react-icons/md';
+import DeleteEmployee from '../components/employee/DeleteEmployee';
 
 export default function AboutEmployee() {
-  const { employeesData, setEmployeesData } = useData();
-  const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
   const { id: URL } = useParams();
+  const { employeesData } = useData();
+  const { isLoading } = useLoading();
+  const [showModal, setShowModal] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [isSuccess, setIsSuccess] = useState();
+  const [message, setMessage] = useState();
+
+  useEffect(() => {
+    document.title = `Employee ID: ${URL}`;
+  }, []);
 
   let employee;
   employeesData.forEach(curr => {
@@ -35,36 +41,21 @@ export default function AboutEmployee() {
       : (document.body.style.overflowY = 'auto');
   }
 
-  async function handleDelete() {
-    const passcode = prompt(
-      'WARNING: This action will permanently delete the record and cannot be undone. To proceed provide authentication password.',
-    );
-    if (passcode === import.meta.env.VITE_AUTHENTICATON_PASSCODE) {
-      let { data, error } = await supabase
-        .from('employee')
-        .delete()
-        .match({ id: employee.id })
-        .select();
-      setEmployeesData(employeesData.filter(curr => curr.id !== employee.id));
-      error
-        ? console.log(
-            `There was en error in deleteting ${employee.name} from the database. Message: ` +
-              error,
-          )
-        : (() => {
-            navigate('/all');
-            console.log(
-              `${employee.name} is deleted from the database successfully`,
-            );
-          })();
-    } else alert('Sorry, authentication password is wrong');
+  function handleNotification(isSuccess, message) {
+    setIsSuccess(isSuccess);
+    setMessage(message);
   }
 
-  if (!employee)
-    return <NotFound message={`Employee doesn't exist on this ID: ${URL}`} />;
+  if (isLoading) return <Loading />;
 
   if (!employee)
-    return <NotFound message={`Employee doesn't exist on this ID: ${URL}`} />;
+    return (
+      <NotFound
+        title={`Employee doesn't exist on this ID: ${URL}`}
+        message="Please check the ID and try again. If the problem persists, contact
+  support for assistance"
+      />
+    );
 
   return (
     <div className="container mx-auto py-16">
@@ -92,13 +83,7 @@ export default function AboutEmployee() {
               <FaEdit />
               <span>Update</span>
             </button>
-            <button
-              className="flex h-[35px] w-[35px] items-center justify-center
-            rounded-full bg-red-500 text-lg text-white duration-300 hover:bg-red-600"
-              onClick={handleDelete}
-            >
-              <MdDelete />
-            </button>
+            <DeleteEmployee selected={employee} />
           </div>
         </div>
         <BasicInfo employee={employee} />
@@ -106,9 +91,16 @@ export default function AboutEmployee() {
         <Bio />
       </div>
       {showModal && (
-        <UpdateEmployee selected={employee} onModal={handleModal} />
+        <UpdateEmployee
+          selected={employee}
+          onModal={handleModal}
+          setShowNotification={setShowNotification}
+          handleNotification={handleNotification}
+        />
       )}
-      {/* <Notification message="Employee Updated Successfully" /> */}
+      {showNotification && (
+        <Notification isSuccess={isSuccess} message={message} />
+      )}
     </div>
   );
 }

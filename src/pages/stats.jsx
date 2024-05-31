@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useData } from '../contexts/DataContext';
 import ChartBox from '../components/stats/ChartBox';
 import Piechart from '../components/common/Piechart';
@@ -5,7 +6,9 @@ import StatsBox from '../components/stats/StatsBox';
 
 export default function Stats() {
   const { employeesData } = useData();
-
+  useEffect(() => {
+    document.title = 'Employee Data | Stats';
+  }, []);
   function countItems(rolesNames) {
     const obj = {};
     rolesNames.forEach(element => {

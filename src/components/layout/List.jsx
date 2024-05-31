@@ -7,7 +7,7 @@ export default function List({ element, filterRating, children }) {
   const { employeesData } = useData();
   const { isLoading } = useLoading();
   const data = element || employeesData;
-  if (!isLoading) return <Loading />;
+  if (isLoading) return <Loading />;
   return (
     <div className="container mx-auto py-16">
       {children}
