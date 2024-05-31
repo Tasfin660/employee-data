@@ -2,6 +2,7 @@ import { MdDelete } from 'react-icons/md';
 import supabase from '../../services/supabase';
 import { useData } from '../../contexts/DataContext';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 export default function DeleteEmployee({ selected }) {
   const { employeesData, setEmployeesData } = useData();
@@ -20,15 +21,23 @@ export default function DeleteEmployee({ selected }) {
           .select();
         setEmployeesData(employeesData.filter(curr => curr.id !== selected.id));
         navigate('/all');
-
         console.log(
           `${selected.name} is deleted from the database successfully`,
         );
+        // handleNotification(true, `Deleted ${selected.name} successfully`);
       } catch (e) {
+        // handleNotification(false, `Couldn't delete ${selected.name} `);
         console.log(
           `There was en error in deleteting ${selected.name} from the database.`,
         );
       }
+      /*
+       finally {
+        setShowNotification(true);
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 3000);
+      }*/
     } else alert('Sorry, authentication password is wrong');
   }
   return (
@@ -41,3 +50,7 @@ rounded-full bg-red-500 text-lg text-white duration-300 hover:bg-red-600 disable
     </button>
   );
 }
+
+DeleteEmployee.propTypes = {
+  select: PropTypes.object,
+};

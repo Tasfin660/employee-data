@@ -3,6 +3,7 @@ import { useData } from '../contexts/DataContext';
 import Filterbar from '../components/layout/Filterbar';
 import List from '../components/layout/List';
 import Notification from '../components/common/Notification';
+import DeleteEmployee from '../components/employee/DeleteEmployee';
 
 export default function AllEmployee() {
   const { employeesData } = useData();

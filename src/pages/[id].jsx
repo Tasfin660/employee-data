@@ -83,7 +83,11 @@ export default function AboutEmployee() {
               <FaEdit />
               <span>Update</span>
             </button>
-            <DeleteEmployee selected={employee} />
+            <DeleteEmployee
+              selected={employee}
+              setShowNotification={setShowNotification}
+              handleNotification={handleNotification}
+            />
           </div>
         </div>
         <BasicInfo employee={employee} />
